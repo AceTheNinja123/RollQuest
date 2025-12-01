@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
-import { DieConfig, DieInPool, DieResult, CustomColors, DICE_CONFIG } from "../constants/dice";
+import { Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { DieInPool, DieResult, CustomColors, DICE_CONFIG } from "../constants/dice";
 import { styles } from "../constants/StyleSheet";
-import { rollSingleDie, getDieColor, generateDiceId } from "../utils/dice";
+import { rollSingleDie, generateDiceId } from "../utils/dice";
 import Customizer from "../components/customizer/Customizer";
-import DiceInPool from "../components/dicePool/DiceInPool";
-import DiceResult from "../components/diceResult/DiceResult";
+import DicePool from "../components/dicePool/DicePool";
+import SelectDice from "../components/selectDice/SelectDice";
+import DiceResultRollor from "../components/diceResultRollor/DiceResultRollor";
+import IndividualResults from "../components/individualResults/IndividualResults";
 const Home: React.FC = () => {
     const [isDark, setIsDark] = useState<boolean>(false);
     const [customColors, setCustomColors] = useState<CustomColors>({});
@@ -66,12 +68,7 @@ const Home: React.FC = () => {
     };
 
     return (
-        <View
-            style={[
-                styles.appContainer,
-                isDark ? styles.darkBg : styles.lightBg
-            ]}
-        >
+        <View style={[styles.appContainer, isDark ? styles.darkBg : styles.lightBg]}>
 
             {/* HEADER */}
             <View style={styles.header}>
@@ -79,100 +76,24 @@ const Home: React.FC = () => {
                     <Text style={styles.headerTitle}>D&D Roller</Text>
                     <Text style={styles.headerSubtitle}>Assemble your dice pool and roll!</Text>
                 </View>
-
-                <TouchableOpacity
-                    onPress={() => setIsSettingsOpen(true)}
-                    style={[styles.settingsButton, isDark ? styles.settingsDark : styles.settingsLight]}
-                >
+                <TouchableOpacity onPress={() => setIsSettingsOpen(true)} style={[styles.settingsButton, isDark ? styles.settingsDark : styles.settingsLight]}>
                     <Text style={styles.settingsIcon}>⚙️</Text>
                 </TouchableOpacity>
             </View>
 
             <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.mainContent}>
-
                 {/* DICE SELECTOR */}
-                <View style={[styles.card, isDark ? styles.cardDark : styles.cardLight]}>
-                    <Text style={styles.sectionTitle}>Select Dice</Text>
-                    <View style={styles.diceGrid}>
-                        {DICE_CONFIG.map((die) => (
-                            <TouchableOpacity
-                                key={die.type}
-                                onPress={() => addToPool(die.type)}
-                                style={[styles.diceSelectButton, { backgroundColor: getDieColor(die.type, customColors) }]}
-                            >
-                                <Text style={styles.diceSelectLabel}>{die.type.toUpperCase()}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                </View>
-
+                <SelectDice isDark={isDark} customColors={customColors} addToPool={addToPool} />
                 {/* DICE POOL */}
-                <View style={[styles.card, isDark ? styles.cardDark : styles.cardLight]}>
-                    <View style={styles.rowBetween}>
-                        <Text style={styles.sectionTitle}>Dice Pool ({dicePool.length})</Text>
-
-                        <TouchableOpacity onPress={clearPool} disabled={dicePool.length === 0}>
-                            <Text style={[styles.clearButton, dicePool.length === 0 && styles.disabled]}>Clear All</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <ScrollView style={[styles.poolBox]}>
-                        {dicePool.length > 0 ? (
-                            <View style={styles.poolList}>
-                                {dicePool.map((die) => (
-                                    <DiceInPool
-                                        key={die.id}
-                                        die={die}
-                                        removeFromPool={removeFromPool}
-                                        customColors={customColors}
-                                    />
-                                ))}
-                            </View>
-                        ) : (<Text style={styles.emptyMessage}>No dice added. Tap a die type above!</Text>)}
-                    </ScrollView>
-                </View>
-
+                <DicePool dicePool={dicePool} isDark={isDark} customColors={customColors} clearPool={clearPool} removeFromPool={removeFromPool} />
                 {/* ROLL BUTTON */}
-                <View style={[styles.rollCard, isDark ? styles.cardDark : styles.cardLight]}>
-                    <View>
-                        <Text style={styles.totalLabel}>Total:</Text>
-                        <Text style={styles.totalValue}>{total}</Text>
-                    </View>
-
-                    <TouchableOpacity
-                        onPress={rollDice}
-                        disabled={dicePool.length === 0 || isRolling}
-                        style={[styles.rollButton, (dicePool.length === 0 || isRolling) ? styles.rollButtonDisabled : styles.rollButtonActive]}
-                    >
-                        <Text style={styles.rollButtonText}>{isRolling ? "Rolling..." : "ROLL"}</Text>
-                    </TouchableOpacity>
-                </View>
-
+                <DiceResultRollor total={total} rollDice={rollDice} dicePool={dicePool} isRolling={isRolling} isDark={isDark} customColors={customColors} />
                 {/* RESULTS */}
-                {results.length > 0 && (
-                    <View style={[styles.card, isDark ? styles.cardDark : styles.cardLight]}>
-                        <Text style={styles.sectionTitle}>Individual Results</Text>
-                        <ScrollView horizontal>
-                            <View style={styles.poolList}>
-                                {results.map((die, idx) => (
-                                    <DiceResult key={idx} die={die} isRolling={isRolling} customColors={customColors} />
-                                ))}
-                            </View>
-                        </ScrollView>
-                    </View>
-                )}
-
+                <IndividualResults results={results} isRolling={isRolling} isDark={isDark} customColors={customColors} />
             </ScrollView>
 
             {/* SETTINGS MODAL */}
-            <Customizer
-                isVisible={isSettingsOpen}
-                onClose={() => setIsSettingsOpen(false)}
-                isDark={isDark}
-                toggleColorMode={setIsDark}
-                customColors={customColors}
-                setCustomColors={setCustomColors}
-            />
+            <Customizer isVisible={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} isDark={isDark} toggleColorMode={setIsDark} customColors={customColors} setCustomColors={setCustomColors} />
         </View>
     );
 };

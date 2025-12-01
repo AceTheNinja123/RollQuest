@@ -1,36 +1,37 @@
 
 import { useCallback } from 'react';
-import { Grid, Button, Typography, Paper, Stack, Box, useTheme } from '@mui/material';
-import { type resultsDie, type diceDie, } from '../diceRollerContent/data';
-import { Minus, } from 'lucide-react';
+import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { type DieInPool, type CustomColors, type DieResult } from '../../constants/dice';
+import { styles } from "../../constants/StyleSheet";
 import DiceInPool from './DiceInPool';
 import { getDieColor } from "../../utils/dice";
 
-export default function DicePool({ dicePool, setDicePool, setResults }: { dicePool: diceDie[]; setDicePool: React.Dispatch<React.SetStateAction<diceDie[]>>; setResults: React.Dispatch<React.SetStateAction<resultsDie[]>>; }) {
-    const theme = useTheme();
-    // Clear the entire pool and results
-    const clearPool = () => {
-        setDicePool([]);
-        setResults([]);
-    };
-
-    // Function to remove a die from the dice pool
-    const removeFromPool = useCallback((id: number) => { setDicePool(prevPool => prevPool.filter(die => die.id !== id)); }, [setDicePool]);
+export default function DicePool({ dicePool, isDark, customColors, clearPool, removeFromPool }: { dicePool: DieInPool[]; isDark: boolean; customColors: CustomColors; clearPool: () => void; removeFromPool: (id: number) => void; }) {
 
     return (
-        <Paper elevation={3} sx={{ width: '100%', maxWidth: 500, mb: 4, p: 3, borderRadius: '16px', backgroundColor: theme.palette.primary.light }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-                <Typography variant="h6" component="h2" fontWeight="700" color="text.secondary">Dice Pool ({dicePool.length})</Typography>
-                <Button onClick={clearPool} disabled={dicePool.length === 0} startIcon={<Minus size={16} />} variant="outlined" size="small" color="secondary">Clear All</Button>
-            </Stack>
+        <View style={[styles.card, isDark ? styles.cardDark : styles.cardLight]}>
+            <View style={styles.rowBetween}>
+                <Text style={styles.sectionTitle}>Dice Pool ({dicePool.length})</Text>
 
-            <Box sx={{ minHeight: 60, maxHeight: 160, overflowY: 'auto', p: 1, border: '1px solid #e0e0e0', borderRadius: '8px', }}>
+                <TouchableOpacity onPress={clearPool} disabled={dicePool.length === 0}>
+                    <Text style={[styles.clearButton, dicePool.length === 0 && styles.disabled]}>Clear All</Text>
+                </TouchableOpacity>
+            </View>
+
+            <ScrollView style={[styles.poolBox]}>
                 {dicePool.length > 0 ? (
-                    <Grid container spacing={1}>
-                        {dicePool.map(die => (<Grid size={{ xs: 6, sm: 4 }} key={die.id}> <DiceInPool die={die} removeFromPool={removeFromPool} /></Grid>))}
-                    </Grid>
-                ) : (<Typography variant="body2" color="text.disabled" align="center" py={1}>No dice added. Select a die type above!</Typography>)}
-            </Box>
-        </Paper>
+                    <View style={styles.poolList}>
+                        {dicePool.map((die) => (
+                            <DiceInPool
+                                key={die.id}
+                                die={die}
+                                removeFromPool={removeFromPool}
+                                customColors={customColors}
+                            />
+                        ))}
+                    </View>
+                ) : (<Text style={styles.emptyMessage}>No dice added. Tap a die type above!</Text>)}
+            </ScrollView>
+        </View>
     );
 }

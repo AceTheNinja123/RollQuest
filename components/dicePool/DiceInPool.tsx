@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { getDieColor } from "../../utils/dice";
+import { styles } from "../../constants/StyleSheet";
 
 interface DiceInPoolProps {
     die: { id: number; type: string };
@@ -28,36 +29,4 @@ const DiceInPool: React.FC<DiceInPoolProps> = React.memo(({ die, removeFromPool,
     );
 }
 );
-
 export default DiceInPool;
-
-const styles = StyleSheet.create({
-    // --- Container wrapping the die ---
-    diceInPoolContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: 8,
-        margin: 4,
-        borderWidth: 2,
-        borderRadius: 12,
-    },
-
-    // --- The die type text (e.g., D6, D10) ---
-    diceInPoolTypeText: {
-        fontWeight: "600",
-        fontSize: 14,
-    },
-
-    // --- Wrapper for the remove button ---
-    diceInPoolRemoveButton: {
-        marginLeft: 8,
-        paddingHorizontal: 4,
-    },
-
-    // --- The "×" text ---
-    diceInPoolRemoveText: {
-        fontSize: 14,
-        fontWeight: "700",
-    },
-});
