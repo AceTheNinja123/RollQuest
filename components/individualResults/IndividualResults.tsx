@@ -7,10 +7,10 @@ export default function IndividualResults({ results, isRolling, isDark, customCo
     return (
         <>
             {results.length > 0 && (
-                <View style={[styles.card, isDark ? styles.cardDark : styles.cardLight]}>
+                <View style={[styles.card, isDark ? styles.cardDark : styles.cardLight, { maxHeight: 250 }]}>
                     <Text style={styles.sectionTitle}>Individual Results</Text>
-                    <ScrollView style={[styles.diceResult]}>
-                        <View style={styles.poolList}>
+                    <ScrollView style={styles.diceResult} contentContainerStyle={{ paddingBottom: 20 }} nestedScrollEnabled={true}>
+                        <View style={styles.diceResultInner}>
                             {results.map((die, idx) => (
                                 <DiceResult key={idx} die={die} isRolling={isRolling} customColors={customColors} />
                             ))}

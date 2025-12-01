@@ -8,6 +8,7 @@ import DicePool from "../components/dicePool/DicePool";
 import SelectDice from "../components/selectDice/SelectDice";
 import DiceResultRollor from "../components/diceResultRollor/DiceResultRollor";
 import IndividualResults from "../components/individualResults/IndividualResults";
+
 const Home: React.FC = () => {
     const [isDark, setIsDark] = useState<boolean>(false);
     const [customColors, setCustomColors] = useState<CustomColors>({});
@@ -81,7 +82,7 @@ const Home: React.FC = () => {
                 </TouchableOpacity>
             </View>
 
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.mainContent}>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.mainContent} nestedScrollEnabled={true}>
                 {/* DICE SELECTOR */}
                 <SelectDice isDark={isDark} customColors={customColors} addToPool={addToPool} />
                 {/* DICE POOL */}

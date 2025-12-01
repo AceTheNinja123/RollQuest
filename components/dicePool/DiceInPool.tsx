@@ -14,9 +14,7 @@ const DiceInPool: React.FC<DiceInPoolProps> = React.memo(({ die, removeFromPool,
 
     return (
         <View style={[styles.diceInPoolContainer, { borderColor: colorHex, backgroundColor: colorHex + "20", },]}>
-            <Text style={[styles.diceInPoolTypeText, { color: colorHex }]}>
-                {die.type.toUpperCase()}
-            </Text>
+            <Text style={[styles.diceInPoolTypeText, { color: colorHex }]}>{die.type.toUpperCase()}</Text>
 
             <TouchableOpacity
                 onPress={() => removeFromPool(die.id)}

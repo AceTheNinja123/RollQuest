@@ -129,13 +129,13 @@ export const styles = StyleSheet.create({
     textLight: { color: "#f3f4f6" },
 
     /* Dice Result */
-    diceResult: { borderWidth: 2, borderRadius: 14, padding: 15, maxHeight: 200, borderColor: "#4b5563", },
-
+    diceResult: { borderWidth: 2, borderRadius: 14, padding: 5, maxHeight: 200, borderColor: "#4b5563" },
+    diceResultInner: { flexDirection: "row", flexWrap: "wrap", gap: 10, },
     DiceResultContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        width: 75,
+        width: "28%",
         height: 60,
         padding: 8,
         margin: 2,
